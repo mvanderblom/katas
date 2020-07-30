@@ -21,6 +21,12 @@ class TestParser(TestCase):
         self.assertTrue(isinstance(output_of_string,  ParsedArguments))
         self.assertEqual(output_of_list, output_of_string)
 
+    def test_argument_order_doesnt_matter(self):
+        output_1 = self.parser.parse('-l -p 8080 -d /usr/logs')
+        output_2 = self.parser.parse('-d /usr/logs -p 8080 -l')
+        self.assertTrue(isinstance(output_1, ParsedArguments))
+        self.assertEqual(output_1, output_2)
+
     def test_novalue_arg_at_the_end_works(self):
         self.parser.parse('-l')
 
