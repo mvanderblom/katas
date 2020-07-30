@@ -21,7 +21,7 @@ class StringArgument(Argument):
         return ''
 
 
-class BooleanArgument(StringArgument):
+class BooleanArgument(Argument):
     def parse(self, value: str):
         return True
 
@@ -29,12 +29,25 @@ class BooleanArgument(StringArgument):
         return False
 
 
-class IntegerArgument(StringArgument):
+class IntegerArgument(Argument):
     def parse(self, value: str):
         return int(value)
 
     def default(self):
         return 0
+
+
+class ListArgument(Argument):
+    def __init__(self, identifier: str, help_text: str, parser):
+        self.identifier = identifier
+        self.help_text = help_text
+        self._parser = parser
+
+    def parse(self, value: str):
+        return list(map(self._parser, value.split(',')))
+
+    def default(self):
+        return []
 
 
 class Schema:
@@ -50,7 +63,8 @@ class Schema:
     def get_help_text(self):
         help_texts = ["Command usage: "]
         for arg in self.args_by_identifier.values():
-            help_texts.append(f"\t-{arg.identifier}\t({str(arg.__class__.__name__).replace('Argument', '').lower()})\t{arg.help_text}")
+            type_string = f"({str(arg.__class__.__name__).replace('Argument', '').lower()})"
+            help_texts.append(f"\t-{arg.identifier}\t{type_string.ljust(9, ' ')}\t{arg.help_text}")
         return '\n'.join(help_texts)
 
     def __eq__(self, other):

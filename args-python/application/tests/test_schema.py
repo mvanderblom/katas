@@ -15,5 +15,5 @@ class TestSchema(unittest.TestCase):
         self.assertEqual(help_text, """Command usage: 
 \t-l\t(boolean)\tTurns on logging
 \t-p\t(integer)\tSpecifies Port
-\t-d\t(string)\tSpecifies Data dir""")
+\t-d\t(string) \tSpecifies Data dir""")
 

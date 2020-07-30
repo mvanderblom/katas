@@ -10,11 +10,13 @@ class ParsedArgument:
         self.argument = argument
         self.value = value
 
+    def __eq__(self, other):
+        return self.argument == other.argument and self.value == other.value
 
 class ParsedArguments:
     def __init__(self, schema: Schema):
         self.schema = schema
-        self.parsedArguments: Dict[str, ParsedArgument] = {}
+        self.parsedArguments: dict[str, ParsedArgument] = {}
 
     def __getitem__(self, item: str):
         if item in self.parsedArguments:
@@ -24,8 +26,8 @@ class ParsedArguments:
     def __eq__(self, other):
         return self.schema == other.schema and self.parsedArguments == other.parsedArguments
 
-    def add(self, parsedArgument: ParsedArgument):
-        self.parsedArguments[parsedArgument.argument.identifier] = parsedArgument
+    def add(self, parsed_argument: ParsedArgument):
+        self.parsedArguments[parsed_argument.argument.identifier] = parsed_argument
 
 
 class Parser:
@@ -35,8 +37,7 @@ class Parser:
     def parse(self, args) -> ParsedArguments:
         if type(args) is str:
             args = args.split(' ')
-        self._parse_list(args)
-        return ParsedArguments(self.schema)
+        return self._parse_list(args)
 
     def _parse_list(self, args: List[str]) -> ParsedArguments:
         parsed_arguments = ParsedArguments(self.schema)
@@ -53,7 +54,8 @@ class Parser:
             raise UnknownArgumentException(arg)
 
         try:
-            return ParsedArgument(argument, argument.parse(arg_value))
+            parsed_value = argument.parse(arg_value)
+            return ParsedArgument(argument, parsed_value)
         except Exception:
             raise InvalidArgumentValueException(arg, arg_value)
 

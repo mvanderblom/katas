@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from application.schema import StringArgument, BooleanArgument, IntegerArgument, Schema
+from application.schema import StringArgument, BooleanArgument, IntegerArgument, Schema, ListArgument
 from application.exceptions import UnknownArgumentException, InvalidArgumentValueException
 from application.parser import Parser, ParsedArguments
 
@@ -10,7 +10,9 @@ class TestParser(TestCase):
         self.parser = Parser(Schema([
             BooleanArgument('l', 'Turns on logging'),
             IntegerArgument('p', 'Specifies Port'),
-            StringArgument('d', 'Specifies Data dir')
+            StringArgument('d', 'Specifies Data dir'),
+            ListArgument('g', 'Specifies a list of integers', int),
+            ListArgument('s', 'Specifies a list of strings', str)
         ]))
 
     def test_parse_converts_input(self):
@@ -30,10 +32,16 @@ class TestParser(TestCase):
         self.parser.parse('-p -1')
 
     def test_argument_value_types(self):
-        parsed_args = self.parser.parse('-l -p 8080 -d /usr/logs')
+        parsed_args = self.parser.parse('-l -p 8080 -d /usr/logs -g 1,2,3,4,5,6 -s hello,world')
         self.assertTrue(isinstance(parsed_args['l'], bool))
         self.assertTrue(isinstance(parsed_args['p'], int))
         self.assertTrue(isinstance(parsed_args['d'], str))
+
+        self.assertTrue(isinstance(parsed_args['g'], list))
+        self.assertTrue(isinstance(parsed_args['g'][0], int))
+
+        self.assertTrue(isinstance(parsed_args['s'], list))
+        self.assertTrue(isinstance(parsed_args['s'][0], str))
 
     def test_invalid_value_for_argument_type_fails(self):
         with self.assertRaises(InvalidArgumentValueException):
@@ -44,3 +52,6 @@ class TestParser(TestCase):
         self.assertEqual(False, parsed_args['l'])
         self.assertEqual(0, parsed_args['p'])
         self.assertEqual('', parsed_args['d'])
+        self.assertEqual([], parsed_args['g'])
+        self.assertEqual([], parsed_args['s'])
+

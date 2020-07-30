@@ -3,11 +3,11 @@ class ParserException(Exception):
 
 
 class UnknownArgumentException(ParserException):
-    def __init__(self, argument):
+    def __init__(self, argument: str):
         self.argument = argument
 
     def __str__(self):
-        return f"Unknown argument provided: -{self.argument}"
+        return f"Unknown argument provided: {self.argument}"
 
 class InvalidArgumentValueException(ParserException):
     def __init__(self, argument, value):
@@ -15,4 +15,4 @@ class InvalidArgumentValueException(ParserException):
         self.value = value
 
     def __str__(self):
-        return f"Invalid argument value provided: -{self.argument} {self.value}"
+        return f"Invalid argument value provided: {self.argument} {self.value}"
