@@ -1,47 +1,66 @@
-from typing import Dict, List
+import re
+from typing import List, Any, Dict
+
+from application.schema import Schema, Argument
+from application.exceptions import UnknownArgumentException, InvalidArgumentValueException
 
 
-class Argument:
-    def __init__(self, identifier, help_text):
-        self.identifier = identifier
-        self.help_text = help_text
-        self.value = None
-
-    def parse(self, value: str):
-        pass
-
-    def value(self):
-        return self.value
+class ParsedArgument:
+    def __init__(self, argument: Argument, value: Any):
+        self.argument = argument
+        self.value = value
 
 
-class BooleanArgument(Argument):
-    def parse(self, value: str):
-        self.value = True
+class ParsedArguments:
+    def __init__(self, schema: Schema):
+        self.schema = schema
+        self.parsedArguments: Dict[str, ParsedArgument] = {}
+
+    def __getitem__(self, item: str):
+        if item in self.parsedArguments:
+            return self.parsedArguments[item].value
+        return self.schema[item].default()
+
+    def __eq__(self, other):
+        return self.schema == other.schema and self.parsedArguments == other.parsedArguments
+
+    def add(self, parsedArgument: ParsedArgument):
+        self.parsedArguments[parsedArgument.argument.identifier] = parsedArgument
 
 
 class Parser:
-    def __init__(self, schema: List[Argument]):
-        self.schema_by_identifier = {arg.identifier: arg for arg in schema}
+    def __init__(self, schema: Schema):
+        self.schema = schema
 
-    def parse(self, args) -> List[Argument]:
+    def parse(self, args) -> ParsedArguments:
         if type(args) is str:
             args = args.split(' ')
-        return self._parse_list(args)
+        self._parse_list(args)
+        return ParsedArguments(self.schema)
 
-    def _parse_list(self, args: List[str]) -> List[Argument]:
-        print(args)
-
+    def _parse_list(self, args: List[str]) -> ParsedArguments:
+        parsed_arguments = ParsedArguments(self.schema)
         for i, arg in enumerate(args):
-            if arg[0] == '-':
-                arg_value = self.get_arg_value(args, i)
-                self.schema_by_identifier[arg[1]].parse(arg_value)
+            if re.match('-[a-zA-Z]', arg):
+                parsed_argument = self._parse_arg(arg, self._get_arg_value(args, i))
+                parsed_arguments.add(parsed_argument)
+        return parsed_arguments
 
-        return args
+    def _parse_arg(self, arg: str, arg_value: str):
+        try:
+            argument = self.schema[arg[1]]
+        except KeyError:
+            raise UnknownArgumentException(arg)
 
-    def get_arg_value(self, args, i):
+        try:
+            return ParsedArgument(argument, argument.parse(arg_value))
+        except Exception:
+            raise InvalidArgumentValueException(arg, arg_value)
+
+    @staticmethod
+    def _get_arg_value(args, i):
         try:
             arg_value = args[i + 1]
         except IndexError:
             arg_value = None
         return arg_value
-
