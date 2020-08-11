@@ -9,6 +9,7 @@ class UnknownArgumentException(ParserException):
     def __str__(self):
         return f"Unknown argument provided: {self.argument}"
 
+
 class InvalidArgumentValueException(ParserException):
     def __init__(self, argument, value):
         self.argument = argument
