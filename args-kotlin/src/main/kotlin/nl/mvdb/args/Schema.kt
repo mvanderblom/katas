@@ -8,15 +8,25 @@ class Schema {
     }
 
     fun get(identifier: String) = this.argumentsByIdentifier[identifier]
-    fun getHelpText() = this.argumentsByIdentifier.values.map {
-            val type_string = it.javaClass.simpleName.replace("Argument", "").padStart(9, ' ')
-            "\t-${it.identifier}\t${type_string}\t${it.helpText}"
-        }.joinToString(System.lineSeparator(), prefix = "Command usage: ${System.lineSeparator()}")
+
+    fun getHelpText() = this.argumentsByIdentifier.values
+        .map {it.toHelpText()}
+        .joinToString(System.lineSeparator(), prefix = "Command usage: ${System.lineSeparator()}")
+
+
 }
 
 abstract class AbstractArgument<T>(val identifier: String, val helpText: String) {
     abstract fun parse(arg: String): T
     abstract fun default(): T
+
+    fun toHelpText(): String {
+        val type_string = this.javaClass.simpleName
+            .replace("Argument", "")
+            .padStart(9, ' ')
+
+        return "\t-${this.identifier}\t${type_string}\t${this.helpText}"
+    }
 }
 
 class StringArgument(identifier: String, helpText: String) : AbstractArgument<String>(identifier, helpText) {

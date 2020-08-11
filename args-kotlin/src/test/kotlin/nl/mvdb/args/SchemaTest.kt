@@ -21,9 +21,12 @@ class SchemaTest {
 
         val helpText = schema.getHelpText()
         println(helpText)
-        Assert.assertEquals("""Command usage: 
-	-l	  Boolean	Turns on logging
-	-p	      Int	Specifies Port
-	-d	   String	Specifies Data dir""", helpText)
+        val expectedText = listOf(
+            "Command usage: ",
+            "\t-l\t  Boolean\tTurns on logging",
+            "\t-p\t      Int\tSpecifies Port",
+            "\t-d\t   String\tSpecifies Data dir"
+        ).joinToString(System.lineSeparator())
+        Assert.assertEquals(expectedText, helpText)
     }
 }
