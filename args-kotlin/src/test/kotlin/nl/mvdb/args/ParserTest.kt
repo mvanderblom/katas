@@ -54,15 +54,15 @@ internal class ParserTest {
     @Test
     fun testArgumentValueTypes(){
         val parsedArgs = parser.parse("-l -p 8080 -d /usr/logs -g 1,2,3,4,5,6 -s hello,world")
-        assertTrue(parsedArgs["l"] is Boolean)
-        assertTrue(parsedArgs["p"] is Int)
-        assertTrue(parsedArgs["d"] is String)
+        assertEquals(true,  parsedArgs["l"])
+        assertEquals(8080, parsedArgs["p"])
+        assertEquals("/usr/logs", parsedArgs["d"])
 
         assertTrue(parsedArgs["g"] is List<*>)
-        assertTrue((parsedArgs["g"] as List<*>).get(0) is Int)
+        assertEquals(1, (parsedArgs["g"] as List<*>).get(0))
 
         assertTrue(parsedArgs["s"] is List<*>)
-        assertTrue((parsedArgs["s"] as List<*>).get(0) is String)
+        assertEquals("hello", (parsedArgs["s"] as List<*>).get(0))
     }
 
     @Test(expected = InvalidArgumentValueException::class)
