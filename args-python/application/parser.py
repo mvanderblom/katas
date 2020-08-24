@@ -13,6 +13,7 @@ class ParsedArgument:
     def __eq__(self, other):
         return self.argument == other.argument and self.value == other.value
 
+
 class ParsedArguments:
     def __init__(self, schema: Schema):
         self.schema = schema

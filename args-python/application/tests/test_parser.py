@@ -39,15 +39,15 @@ class TestParser(TestCase):
 
     def test_argument_value_types(self):
         parsed_args = self.parser.parse('-l -p 8080 -d /usr/logs -g 1,2,3,4,5,6 -s hello,world')
-        self.assertTrue(isinstance(parsed_args['l'], bool))
-        self.assertTrue(isinstance(parsed_args['p'], int))
-        self.assertTrue(isinstance(parsed_args['d'], str))
+        self.assertTrue(parsed_args['l'])
+        self.assertEqual(parsed_args['p'], 8080)
+        self.assertEqual(parsed_args['d'], '/usr/logs')
 
         self.assertTrue(isinstance(parsed_args['g'], list))
-        self.assertTrue(isinstance(parsed_args['g'][0], int))
+        self.assertEqual(parsed_args['g'][0], 1)
 
         self.assertTrue(isinstance(parsed_args['s'], list))
-        self.assertTrue(isinstance(parsed_args['s'][0], str))
+        self.assertEqual(parsed_args['s'][0], 'hello')
 
     def test_invalid_value_for_argument_type_fails(self):
         with self.assertRaises(InvalidArgumentValueException):
