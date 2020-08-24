@@ -8,9 +8,11 @@ class Parser(private val schema: Schema) {
 
     fun parse(args: String)= parse(args.split(" "))
 
-    fun parse(args: List<String>) = args.withIndex()
+    fun parse(args: List<String>) = ParsedArguments(schema, args.withIndex()
             .filter { (_, arg) -> ARG_REGEX.matches(arg) }
             .map { (index, arg) ->this.parseArg(arg[1].toString(), getArgValue(args, index)) }
+            .sortedBy { x -> x.argument.identifier  })
+
 
     private fun getArgValue(args: List<String>, index: Int): String? =
         if (args.size > index + 1)  args.get(index + 1) else null
@@ -28,4 +30,11 @@ class Parser(private val schema: Schema) {
 
 }
 
-data class ParsedArgument(val argument: AbstractArgument<out Any>, val parse: Any)
+data class ParsedArgument(val argument: AbstractArgument<out Any>, val value: Any)
+data class ParsedArguments(val schema: Schema, val arguments: List<ParsedArgument>) {
+    operator fun get(s: String): Any = this.arguments
+        .singleOrNull{ pa -> pa.argument.identifier == s }
+        ?.let { pa -> pa.value }
+        ?: schema.get(s).default()
+
+}

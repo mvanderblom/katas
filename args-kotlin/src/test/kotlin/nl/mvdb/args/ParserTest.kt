@@ -23,53 +23,61 @@ internal class ParserTest {
     }
 
     @Test
-    fun test_parse_converts_input() {
+    fun testParseConvertsInput() {
         val outputOfString = parser.parse("-l -p 8080 -d /usr/logs")
         val outputOfList = parser.parse(listOf("-l", "-p", "8080", "-d", "/usr/logs"))
-        assertTrue(outputOfList is List)
         assertEquals(outputOfString, outputOfList)
     }
 
     @Test
-    fun test_argument_order_doesnt_matter(){
+    fun testArgumentOrderDoesntMatter(){
         var output1 = parser.parse("-l -p 8080 -d /usr/logs")
         var output2 = parser.parse("-d /usr/logs -p 8080 -l")
-        assertTrue(output1 is List)
         assertEquals(output1, output2)
     }
-//
-//    fun test_novalue_arg_at_the_end_works():
-//    parser.parse("-l")
-//
-//    fun test_unknown_argument_fails():
-//    with assertRaises(UnknownArgumentException):
-//    parser.parse("-x")
-//
-//    fun test_argument_with_negative_int_value():
-//    parser.parse("-p -1")
-//
-//    fun test_argument_value_types():
-//    parsed_args = parser.parse("-l -p 8080 -d /usr/logs -g 1,2,3,4,5,6 -s hello,world")
-//    assertTrue(isinstance(parsed_args["l"], bool))
-//    assertTrue(isinstance(parsed_args["p"], int))
-//    assertTrue(isinstance(parsed_args["d"], str))
-//
-//    assertTrue(isinstance(parsed_args["g"], list))
-//    assertTrue(isinstance(parsed_args["g"][0], int))
-//
-//    assertTrue(isinstance(parsed_args["s"], list))
-//    assertTrue(isinstance(parsed_args["s"][0], str))
-//
-//    fun test_invalid_value_for_argument_type_fails():
-//    with self.assertRaises(InvalidArgumentValueException):
-//    self.parser.parse("-p SomeString")
-//
-//    fun test_default_values():
-//    parsed_args = self.parser.parse('')
-//    self.assertEqual(False, parsed_args['l'])
-//    self.assertEqual(0, parsed_args['p'])
-//    self.assertEqual('', parsed_args['d'])
-//    self.assertEqual([], parsed_args['g'])
-//    self.assertEqual([], parsed_args['s'])
+
+    @Test
+    fun testNovalueArgAtTheEndWorks(){
+        parser.parse("-l")
+    }
+
+    @Test(expected = UnknownIdentifierException::class)
+    fun testUnknownArgumentThrows(){
+        parser.parse("-x")
+    }
+
+    @Test
+    fun testArgumentWithNegativeIntValue(){
+        parser.parse("-p -1")
+    }
+
+    @Test
+    fun testArgumentValueTypes(){
+        val parsedArgs = parser.parse("-l -p 8080 -d /usr/logs -g 1,2,3,4,5,6 -s hello,world")
+        assertTrue(parsedArgs["l"] is Boolean)
+        assertTrue(parsedArgs["p"] is Int)
+        assertTrue(parsedArgs["d"] is String)
+
+        assertTrue(parsedArgs["g"] is List<*>)
+        assertTrue((parsedArgs["g"] as List<*>).get(0) is Int)
+
+        assertTrue(parsedArgs["s"] is List<*>)
+        assertTrue((parsedArgs["s"] as List<*>).get(0) is String)
+    }
+
+    @Test(expected = InvalidArgumentValueException::class)
+    fun testInvalidValueForArgumentTypeFails() {
+        parser.parse("-p SomeString")
+    }
+
+    @Test
+    fun testDefaultValues() {
+        val parsedArgs = parser.parse("")
+        assertEquals(false, parsedArgs["l"])
+        assertEquals(0, parsedArgs["p"])
+        assertEquals("", parsedArgs["d"])
+        assertEquals(emptyList<Any>(), parsedArgs["g"])
+        assertEquals(emptyList<Any>(), parsedArgs["s"])
+    }
 
 }

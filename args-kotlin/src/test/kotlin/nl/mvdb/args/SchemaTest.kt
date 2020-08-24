@@ -4,11 +4,6 @@ import org.junit.Assert
 import org.junit.Test
 
 class SchemaTest {
-
-    @Test
-    fun get() {
-    }
-
     @Test
     fun getHelpText() {
         val schema = Schema(
