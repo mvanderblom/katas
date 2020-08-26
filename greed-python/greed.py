@@ -1,6 +1,6 @@
 from typing import List
 
-from outcomes import Outcome, StraightOutcome
+from outcomes import Outcome
 
 
 class Greed:
