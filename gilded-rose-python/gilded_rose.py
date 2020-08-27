@@ -49,10 +49,7 @@ class LegendaryItem(AgingItem):
         pass
 
 
-class AgedBrie(AgingItem):
-    def __init__(self, sell_in, quality):
-        super().__init__("Aged Brie", sell_in, quality)
-
+class BetterWithAgeItem(AgingItem):
     def _get_quality_modifier(self):
         return super()._get_quality_modifier() * -1
 

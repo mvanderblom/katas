@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from gilded_rose import Item, GildedRose, AgingItem, AgedBrie, LegendaryItem, BackstagePass, ConjuredItem
+from gilded_rose import Item, GildedRose, AgingItem, BetterWithAgeItem, LegendaryItem, BackstagePass, ConjuredItem
 
 
 class GildedRoseTest(unittest.TestCase):
@@ -20,7 +20,7 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(0, items[0].quality)
 
     def test_aged_brie_increases_in_quality_with_age(self):
-        items = [AgedBrie(10, 0)]
+        items = [BetterWithAgeItem("Aged Brie", 10, 0)]
         gilded_rose = GildedRose(items)
         gilded_rose.update_quality()
         self.assertEqual(1, items[0].quality)
@@ -28,7 +28,7 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(2, items[0].quality)
 
     def test_aged_brie_increases_in_quality_twice_as_fast_after_sell_by_date(self):
-        items = [AgedBrie(-1, 0)]
+        items = [BetterWithAgeItem("Aged Brie", -1, 0)]
         gilded_rose = GildedRose(items)
         gilded_rose.update_quality()
         self.assertEqual(2, items[0].quality)
@@ -36,7 +36,7 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(4, items[0].quality)
 
     def test_quality_is_never_higher_than_50(self):
-        items = [AgedBrie(10, 50)]
+        items = [BetterWithAgeItem("Aged Brie", 10, 50)]
         gilded_rose = GildedRose(items)
         gilded_rose.update_quality()
         self.assertEqual(50, items[0].quality)
