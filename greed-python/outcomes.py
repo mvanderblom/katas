@@ -11,17 +11,17 @@ class Outcome:
         raise NotImplementedError
 
 
+class NumberedOutcome(Outcome, ABC):
+    def __init__(self, number: int):
+        self.number = number
+
+
 class StraightOutcome(Outcome):
     def check(self, dice: List[int]):
         return dice == [1, 2, 3, 4, 5, 6]
 
     def score(self, *args):
         return 1200
-
-
-class NumberedOutcome(Outcome, ABC):
-    def __init__(self, number: int):
-        self.number = number
 
 
 class SingleOutcome(NumberedOutcome):
