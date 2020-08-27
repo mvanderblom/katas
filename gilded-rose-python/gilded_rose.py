@@ -39,6 +39,11 @@ class AgingItem(Item):
         return -2
 
 
+class ConjuredItem(AgingItem):
+    def _get_quality_modifier(self):
+        return super()._get_quality_modifier() * 2
+
+
 class LegendaryItem(AgingItem):
     def age(self):
         pass
@@ -49,9 +54,7 @@ class AgedBrie(AgingItem):
         super().__init__("Aged Brie", sell_in, quality)
 
     def _get_quality_modifier(self):
-        if self.sell_in > 0:
-            return 1
-        return 2
+        return super()._get_quality_modifier() * -1
 
 
 class BackstagePass(AgingItem):
