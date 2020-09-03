@@ -28,4 +28,22 @@ class RomanCalculatorTest {
         calculator.enter("V")
         assertEquals("X", calculator.add())
     }
+
+    @Test
+    fun testFlattenSubtractives() {
+        val c = RomanCalculator()
+        assertEquals("IIII", RomanNumber("IV").flattenSubtractives())
+        assertEquals("VIIII", RomanNumber("IX").flattenSubtractives())
+        assertEquals("XVIIII", RomanNumber("XIX").flattenSubtractives())
+        assertEquals("MDCCCCXVIIII", RomanNumber("MCMXIX").flattenSubtractives())
+    }
+
+    @Test
+    fun testInflateSubtractives() {
+        val c = RomanCalculator()
+        assertEquals("IV", RomanNumber("IIII").shorten())
+        assertEquals("IX", RomanNumber("VIIII").shorten())
+        assertEquals("XIX", RomanNumber("XVIIII").shorten())
+        assertEquals("MCMXIX", RomanNumber("MDCCCCXVIIII").shorten())
+    }
 }
