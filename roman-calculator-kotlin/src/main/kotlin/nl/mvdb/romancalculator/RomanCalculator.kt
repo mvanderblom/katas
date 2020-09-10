@@ -17,10 +17,12 @@ class RomanCalculator {
     }
 
     fun add(): String {
-        val x = terms
-            .map(RomanNumber::flattenSubtractives)
+        return terms.joinToString("", transform = RomanNumber::spread)
+                .toList().sorted()
+                .joinToString ("")
+                .toRoman()
+                .shorten()
 
-        return ""
     }
 }
 
@@ -31,17 +33,24 @@ data class RomanNumber(val number: String){
             "XL" to "XXXX",
             "XC" to "VXXXX",
             "CD" to "CCCC",
-            "CM" to "DCCCC",
-
-            "IX" to "VIV",
-            "XC" to "VXV",
-            "CM" to "DCD"
+            "CM" to "DCCCC"
     )
 
-    fun flattenSubtractives(): String {
+    private val synonims = mapOf(
+            "IIIII" to "V",
+            "VVVVVVVVVV" to "L",
+            "LL" to "C",
+            "CCCCC" to "D",
+            "DD" to "M",
+            "VIV" to "IX",
+            "VXV" to "XC",
+            "DCD" to "CM"
+    )
+
+    fun spread(): String {
         var flattenedNumber = number
-        for ((subtractive, replacement) in subtractives.entries)
-            flattenedNumber = flattenedNumber.replace(subtractive, replacement)
+        for ((short, long) in subtractives.entries)
+            flattenedNumber = flattenedNumber.replace(short, long)
 
         return flattenedNumber
     }
@@ -49,9 +58,16 @@ data class RomanNumber(val number: String){
     fun shorten(): String {
         var shortenedNumber = number
 
-        for ((subtractive, replacement) in subtractives.entries)
-            shortenedNumber = shortenedNumber.replace(replacement, subtractive)
+        for ((long, short) in synonims.entries)
+            shortenedNumber = shortenedNumber.replace(long, short)
+
+        for ((short, long) in subtractives.entries)
+            shortenedNumber = shortenedNumber.replace(long, short)
 
         return shortenedNumber
     }
+}
+
+fun String.toRoman(): RomanNumber {
+    return RomanNumber(this)
 }

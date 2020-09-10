@@ -30,20 +30,23 @@ class RomanCalculatorTest {
     }
 
     @Test
-    fun testFlattenSubtractives() {
-        val c = RomanCalculator()
-        assertEquals("IIII", RomanNumber("IV").flattenSubtractives())
-        assertEquals("VIIII", RomanNumber("IX").flattenSubtractives())
-        assertEquals("XVIIII", RomanNumber("XIX").flattenSubtractives())
-        assertEquals("MDCCCCXVIIII", RomanNumber("MCMXIX").flattenSubtractives())
+    fun testSpread() {
+        assertEquals("IIII", "IV".toRoman().spread())
+        assertEquals("VIIII", "IX".toRoman().spread())
+        assertEquals("XVIIII", "XIX".toRoman().spread())
+        assertEquals("MDCCCCXVIIII", "MCMXIX".toRoman().spread())
     }
 
     @Test
-    fun testInflateSubtractives() {
-        val c = RomanCalculator()
-        assertEquals("IV", RomanNumber("IIII").shorten())
-        assertEquals("IX", RomanNumber("VIIII").shorten())
-        assertEquals("XIX", RomanNumber("XVIIII").shorten())
-        assertEquals("MCMXIX", RomanNumber("MDCCCCXVIIII").shorten())
+    fun testShorten() {
+        assertEquals("IV", "IIII".toRoman().shorten())
+        assertEquals("IX", "VIIII".toRoman().shorten())
+        assertEquals("XIX", "XVIIII".toRoman().shorten())
+        assertEquals("MCMXIX", "MDCCCCXVIIII".toRoman().shorten())
+    }
+
+    @Test
+    fun testShortenLengthySequences() {
+        assertEquals("VI", "IIIIII".toRoman().shorten())
     }
 }
